@@ -3,26 +3,31 @@
   font-style: normal;
   font-weight: 100;
   font-display: swap;
-  src: url(/static/font/static/Inter-Thin.ttf);
+  src: url(/font/static/Inter-Thin.ttf);
 }
 @font-face {
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(/static/font/static/Inter-Regular.ttf);
+  src: url(/font/static/Inter-Regular.ttf);
 }
 @font-face {
   font-family: "Inter";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(/static/font/static/Inter-Bold.ttf);
+  src: url(/font/static/Inter-Bold.ttf);
 }
 @font-face {
   font-family: "Inter";
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url(/static/font/static/Inter-Black.ttf);
+  src: url(/font/static/Inter-Black.ttf);
+}
+body,
+html {
+  margin: 0;
+  padding: 0;
 }

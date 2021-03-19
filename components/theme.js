@@ -16,22 +16,20 @@ export default {
     heading: 1.125,
   },
   colors: {
-    text: "#000",
-    background: "#ccc",
-    primary: "#07c",
-    secondary: "#30c",
-    muted: "#f6f6f6",
-    modes: {
-      dark: {
-        text: "#fff",
-        background: "#060606",
-        primary: "#3cf",
-        secondary: "#e0f",
-        muted: "#191919",
-        highlight: "#29112c",
-        gray: "#999",
-        purple: "#c0f",
-      },
+    text: "#272838",
+    background: "#FEFFFE",
+    primary: "#F25F5C",
+    secondary: "#38A3A5",
+    muted: "#F0F2EF",
+  },
+  styles: {
+    root: {
+      fontFamily: "body",
+      lineHeight: "body",
+      fontWeight: "body",
+    },
+    textarea: {
+      border: "red",
     },
   },
 };

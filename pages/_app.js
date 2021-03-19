@@ -3,8 +3,10 @@ import "../css/main.css";
 import { ThemeProvider } from "theme-ui";
 import theme from "../components/theme";
 
-export default ({ Component, props }) => (
-  <ThemeProvider theme={theme}>
-    <Component {...props} />
-  </ThemeProvider>
-);
+export default function App({ Component, props }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <Component {...props} />
+    </ThemeProvider>
+  );
+}
