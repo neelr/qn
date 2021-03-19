@@ -1,1 +1,9 @@
-export default () => <h1>hola</h1>
+import { Flex, Heading } from "rebass";
+
+export default function Home() {
+  return (
+    <Flex>
+      <Heading>Hi</Heading>
+    </Flex>
+  );
+}
