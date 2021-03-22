@@ -43,7 +43,8 @@ export const TextArea = ({ sx, ...props }) => (
     {...props}
     as="div"
     role="textbox"
-    contentEditable
+    contentEditable={!props?.editable}
+    {...props}
   />
 );
 

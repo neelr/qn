@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, Heading, Image, Text } from "theme-ui";
+import { Flex, Heading } from "theme-ui";
 import { Section, TextArea, Column, Inp, Clicker } from "@components/semantics";
 
 export default function Home() {
@@ -56,24 +56,17 @@ export default function Home() {
     <Section sx={{ p: 0 }}>
       <Section
         sx={{
-          //bg: "primary",
-          p: "0",
-          backgroundImage: `url("/wave.svg")`,
-          backgroundSize: "cover",
-          overflow: "hidden",
+          bg: "primary",
         }}
       >
         <Heading
           sx={{
-            fontSize: [6, 7, 8],
+            fontSize: [4, 5, 6],
             m: "auto",
           }}
         >
-          qn
+          Contacts
         </Heading>
-        <Text my="10px" mx="auto" as="b">
-          Meetings, Calender, Contacts.
-        </Text>
         <Inp mx="auto" placeholder="Search..." />
       </Section>
       <Section>
