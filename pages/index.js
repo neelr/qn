@@ -1,42 +1,25 @@
 import { useState } from "react";
 import { Flex, Heading, Text, Image } from "theme-ui";
 import { Section, TextArea, Column, Inp, Clicker } from "@components/semantics";
-import { getServerSideProps } from "@utils/authServer";
+import { getServerSideProps as server } from "@utils/authServer";
+import base from "@utils/airtable";
 
-export default function Home() {
-  const Meeting = ({ name, date, notes, ...props }) => {
+export default function Home({ meets, ...props }) {
+  const Meeting = ({ name, date, notes, pname, pnotes, ...props }) => {
     return (
       <Column
         sx={{
           borderRadius: "5px",
           bg: "muted",
-          p: "10px",
+          p: "20px",
           my: "5px",
           mx: "10px",
         }}
         {...props}
       >
-        <Flex
-          onClick={() => {
-            console.log(meetings);
-            meetings.shift();
-            addMeet(meetings);
-            console.log(meetings);
-          }}
-          sx={{
-            transition: "all 0.3s",
-            width: 0,
-            bg: "primary",
-            p: "10px",
-            ml: "auto",
-            ":hover": {
-              bg: "red",
-              cursor: "pointer",
-            },
-          }}
-        />
         <Heading>{name}</Heading>
-        <Heading sx={{ fontSize: 2 }}>{date}</Heading>
+        <Heading sx={{ fontSize: 2 }}>{pname}</Heading>
+        <Heading sx={{ fontSize: 1 }}>{date}</Heading>
         <Heading>Meeting Notes</Heading>
         <TextArea
           sx={{
@@ -62,7 +45,7 @@ export default function Home() {
             m: "5px",
           }}
         >
-          {notes.split("\n").map((v) => (
+          {pnotes.split("\n").map((v) => (
             <>
               {v}
               <br />
@@ -80,35 +63,7 @@ export default function Home() {
       </Column>
     );
   };
-  const [meetings, addMeet] = useState([
-    <Meeting
-      name="Neel Redkar"
-      date="09-09-09"
-      notes={`James Logan High School	CA/US	Bhasin & Menotti Punishment
-      James Logan High School	CA/US	Shaikh & Rawat  PredPol
-      Sonoma Academy	CA/	Jannes & Stewart Green Criminology
-      Lowell High School	CA/	Satovsky & Tsan DNA
-      James Logan High School	CA/US	Hui & Ayyala Pretexualw`}
-    />,
-    <Meeting
-      name="Neel Redkar"
-      date="09-09-09"
-      notes={`James Logan High School	CA/US	Bhasin & Menotti Punishment
-      James Logan High School	CA/US	Shaikh & Rawat  PredPol
-      Sonoma Academy	CA/	Jannes & Stewart Green Criminology
-      Lowell High School	CA/	Satovsky & Tsan DNA
-      James Logan High School	CA/US	Hui & Ayyala Pretexualw`}
-    />,
-    <Meeting
-      name="Neel Redkar"
-      date="09-09-09"
-      notes={`James Logan High School	CA/US	Bhasin & Menotti Punishment
-    James Logan High School	CA/US	Shaikh & Rawat  PredPol
-    Sonoma Academy	CA/	Jannes & Stewart Green Criminology
-    Lowell High School	CA/	Satovsky & Tsan DNA
-    James Logan High School	CA/US	Hui & Ayyala Pretexualw`}
-    />,
-  ]);
+  const [meetings, addMeet] = useState(meets);
   return (
     <Section sx={{ p: 0 }}>
       <Section
@@ -130,13 +85,25 @@ export default function Home() {
           Meetings, Calendar, Contacts.
         </Text>
         <Flex mx="auto">
-          <Inp mx="5px" placeholder="Search..." />
+          <Inp id="searchBar" mx="5px" placeholder="Search..." />
           <Clicker
             sx={{
               py: 0,
             }}
             mx="5px"
             bg="secondary"
+            onClick={(e) => {
+              let search = document.getElementById("searchBar").value;
+              if (search.length > 0) {
+                addMeet(
+                  meets.filter((v) =>
+                    JSON.stringify(Object.values(v))
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                  )
+                );
+              }
+            }}
           >
             <Flex>
               <Image m="auto" src="/arrow.svg" />
@@ -152,8 +119,38 @@ export default function Home() {
           width: "100vw",
         }}
       />
-      <Section>{meetings}</Section>
+      <Section>
+        {meetings.map((v) => (
+          <Meeting
+            name={v.Name}
+            date={new Date(v.Date).toString()}
+            notes={v.Notes}
+            pname={v.PersonName[0]}
+            pnotes={v.PersonNotes[0]}
+          />
+        ))}
+      </Section>
     </Section>
   );
 }
-export { getServerSideProps };
+export async function getServerSideProps(ctx) {
+  let payload = await server(ctx);
+  if (payload.redirect) return payload;
+
+  let meets = await base("Meetings")
+    .select({
+      sort: [
+        {
+          field: "Date",
+          direction: "asc",
+        },
+      ],
+      filterByFormula: "NOT({Done})",
+    })
+    .all();
+  if (!meets) {
+    return { props: { meets: [] } };
+  }
+  meets = meets.map((v) => v.fields);
+  return { props: { meets } };
+}

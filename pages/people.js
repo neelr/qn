@@ -1,47 +1,26 @@
 import { useState } from "react";
-import { Flex, Heading } from "theme-ui";
+import { Flex, Heading, Text, Image } from "theme-ui";
 import { Section, TextArea, Column, Inp, Clicker } from "@components/semantics";
-import { getServerSideProps } from "@utils/authServer";
+import { getServerSideProps as server } from "@utils/authServer";
+import base from "@utils/airtable";
 
-export default function Home() {
-  const [meetings, addMeet] = useState([]);
-
-  const Meeting = ({ props }) => {
+export default function Home({ people, ...props }) {
+  const Meeting = ({ name, email, notes, phone, ...props }) => {
     return (
       <Column
         sx={{
           borderRadius: "5px",
           bg: "muted",
-          p: "10px",
+          p: "20px",
           my: "5px",
           mx: "10px",
         }}
         {...props}
       >
-        <Flex
-          onClick={() => {
-            console.log(meetings);
-            meetings.shift();
-            addMeet(meetings);
-            console.log(meetings);
-          }}
-          sx={{
-            transition: "all 0.3s",
-            width: 0,
-            bg: "primary",
-            p: "10px",
-            ml: "auto",
-            ":hover": {
-              bg: "red",
-              cursor: "pointer",
-            },
-          }}
-        />
-        <Heading>Name</Heading>
-        <Inp bg="white" placeholder="Check In 1" />
-        <Heading>Date</Heading>
-        <Inp bg="white" type="datetime-local" placeholder="03/02/2005" />
-        <Heading>Meeting Notes</Heading>
+        <Heading>{name}</Heading>
+        <Heading sx={{ fontSize: 2 }}>{phone}</Heading>
+        <Heading sx={{ fontSize: 1 }}>{email}</Heading>
+        <Heading>Notes</Heading>
         <TextArea
           sx={{
             bg: "white",
@@ -49,64 +28,95 @@ export default function Home() {
             minHeight: "150px",
             m: "5px",
           }}
-        />
+        >
+          {notes.split("\n").map((v) => (
+            <>
+              {v}
+              <br />
+            </>
+          ))}
+        </TextArea>
+        <Flex mx="auto">
+          <Clicker bg="muted" color="text" mx="5px" my="10px">
+            Save
+          </Clicker>
+          <Clicker bg="secondary" mx="5px" my="10px">
+            Done!
+          </Clicker>
+        </Flex>
       </Column>
     );
   };
+  console.log(people);
+  const [meetings, addMeet] = useState(people);
   return (
     <Section sx={{ p: 0 }}>
       <Section
         sx={{
           bg: "primary",
+          p: 0,
+          pb: "10px",
         }}
       >
         <Heading
           sx={{
             fontSize: [4, 5, 6],
             m: "auto",
+            my: "10px",
           }}
         >
           Contacts
         </Heading>
-        <Inp mx="auto" placeholder="Search..." />
+        <Flex mx="auto">
+          <Inp id="searchBar" mx="5px" placeholder="Search..." />
+          <Clicker
+            sx={{
+              py: 0,
+            }}
+            mx="5px"
+            bg="secondary"
+            onClick={(e) => {
+              let search = document.getElementById("searchBar").value;
+              if (search.length > 0) {
+                addMeet(
+                  people.filter((v) =>
+                    JSON.stringify(Object.values(v))
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                  )
+                );
+              }
+            }}
+          >
+            <Flex>
+              <Image m="auto" src="/arrow.svg" />
+            </Flex>
+          </Clicker>
+        </Flex>
       </Section>
       <Section>
-        <Flex
-          sx={{
-            flexWrap: "wrap",
-            mx: ["auto", "10vw", "10vw"],
-            alignItems: "stretch",
-          }}
-        >
-          <Column sx={{ flex: [null, null, 1] }} my="10px">
-            <Heading mx="10px">Person</Heading>
-            <Inp placeholder="John Doe" />
-            <Heading mx="10px">Person Notes</Heading>
-            <TextArea
-              sx={{
-                width: "300px",
-                minHeight: "50px",
-                m: "5px",
-              }}
-            />
-            <Heading mx="10px">Email</Heading>
-            <Inp type="email" placeholder="johndoe@neelr.dev" />
-            <Heading mx="10px">Phone</Heading>
-            <Inp placeholder="+1 (925)-448-5457" />
-          </Column>
-          <Column sx={{ flex: [null, null, 1] }} my="10px">
-            {meetings}
-            <Clicker onClick={() => addMeet([...meetings, <Meeting />])}>
-              Add Meeting
-            </Clicker>
-          </Column>
-        </Flex>
-        <Clicker my="10px" mx="auto">
-          Add Person
-        </Clicker>
+        {meetings.map((v) => (
+          <Meeting
+            name={v.Name}
+            notes={v.Notes}
+            email={v.Email}
+            phone={v.Phone}
+          />
+        ))}
       </Section>
     </Section>
   );
 }
+export async function getServerSideProps(ctx) {
+  let payload = await server(ctx);
+  if (payload.redirect) return payload;
 
-export { getServerSideProps };
+  let people = await base("People").select().all();
+  if (!people) {
+    return { props: { people: [] } };
+  }
+  people = people.map((v) => v.fields);
+
+  console.log(people);
+  return { props: { people } };
+}
