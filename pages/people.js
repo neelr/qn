@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Flex, Heading } from "theme-ui";
 import { Section, TextArea, Column, Inp, Clicker } from "@components/semantics";
+import { getServerSideProps } from "@utils/authServer";
 
 export default function Home() {
   const [meetings, addMeet] = useState([]);
@@ -39,7 +40,7 @@ export default function Home() {
         <Heading>Name</Heading>
         <Inp bg="white" placeholder="Check In 1" />
         <Heading>Date</Heading>
-        <Inp bg="white" type="date" placeholder="03/02/2005" />
+        <Inp bg="white" type="datetime-local" placeholder="03/02/2005" />
         <Heading>Meeting Notes</Heading>
         <TextArea
           sx={{
@@ -107,3 +108,5 @@ export default function Home() {
     </Section>
   );
 }
+
+export { getServerSideProps };

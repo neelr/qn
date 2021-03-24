@@ -1,4 +1,4 @@
-import { Flex, Input, Textarea, Button } from "theme-ui";
+import { Flex, Input, Textarea, Button, Select } from "theme-ui";
 
 export const Section = ({ sx, ...props }) => (
   <Flex
@@ -11,7 +11,25 @@ export const Section = ({ sx, ...props }) => (
     {...props}
   />
 );
-
+export const Selector = ({ sx, ...props }) => (
+  <Select
+    sx={{
+      transition: "all 0.3s",
+      boxShadow: "2px 2px",
+      fontSize: 0,
+      bg: "muted",
+      ":focus": {
+        bg: "background",
+        boxShadow: "4px 4px",
+        outline: "none",
+      },
+      my: "5px",
+      width: "200px",
+      ...sx,
+    }}
+    {...props}
+  />
+);
 export const Column = ({ sx, ...props }) => (
   <Flex
     sx={{
@@ -52,6 +70,7 @@ export const Clicker = ({ sx, ...props }) => (
   <Button
     sx={{
       boxShadow: "2px 2px #272838",
+      outline: "none",
       transition: "all 0.3s",
       ":hover": {
         boxShadow: "4px 4px #272838",

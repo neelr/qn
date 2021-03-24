@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Flex, Heading, Image, Text } from "theme-ui";
+import { Flex, Heading, Text, Image } from "theme-ui";
 import { Section, TextArea, Column, Inp, Clicker } from "@components/semantics";
+import { getServerSideProps } from "@utils/authServer";
 
 export default function Home() {
-  const [meetings, addMeet] = useState([]);
-
-  const Meeting = ({ props }) => {
+  const Meeting = ({ name, date, notes, ...props }) => {
     return (
       <Column
         sx={{
@@ -36,10 +35,8 @@ export default function Home() {
             },
           }}
         />
-        <Heading>Name</Heading>
-        <Inp bg="white" placeholder="Check In 1" />
-        <Heading>Date</Heading>
-        <Inp bg="white" type="date" placeholder="03/02/2005" />
+        <Heading>{name}</Heading>
+        <Heading sx={{ fontSize: 2 }}>{date}</Heading>
         <Heading>Meeting Notes</Heading>
         <TextArea
           sx={{
@@ -48,19 +45,77 @@ export default function Home() {
             minHeight: "150px",
             m: "5px",
           }}
-        />
+        >
+          {notes.split("\n").map((v) => (
+            <>
+              {v}
+              <br />
+            </>
+          ))}
+        </TextArea>
+        <Heading>Person Notes</Heading>
+        <TextArea
+          sx={{
+            bg: "white",
+            width: "94%",
+            minHeight: "150px",
+            m: "5px",
+          }}
+        >
+          {notes.split("\n").map((v) => (
+            <>
+              {v}
+              <br />
+            </>
+          ))}
+        </TextArea>
+        <Flex mx="auto">
+          <Clicker bg="muted" color="text" mx="5px" my="10px">
+            Save
+          </Clicker>
+          <Clicker bg="secondary" mx="5px" my="10px">
+            Done!
+          </Clicker>
+        </Flex>
       </Column>
     );
   };
+  const [meetings, addMeet] = useState([
+    <Meeting
+      name="Neel Redkar"
+      date="09-09-09"
+      notes={`James Logan High School	CA/US	Bhasin & Menotti Punishment
+      James Logan High School	CA/US	Shaikh & Rawat  PredPol
+      Sonoma Academy	CA/	Jannes & Stewart Green Criminology
+      Lowell High School	CA/	Satovsky & Tsan DNA
+      James Logan High School	CA/US	Hui & Ayyala Pretexualw`}
+    />,
+    <Meeting
+      name="Neel Redkar"
+      date="09-09-09"
+      notes={`James Logan High School	CA/US	Bhasin & Menotti Punishment
+      James Logan High School	CA/US	Shaikh & Rawat  PredPol
+      Sonoma Academy	CA/	Jannes & Stewart Green Criminology
+      Lowell High School	CA/	Satovsky & Tsan DNA
+      James Logan High School	CA/US	Hui & Ayyala Pretexualw`}
+    />,
+    <Meeting
+      name="Neel Redkar"
+      date="09-09-09"
+      notes={`James Logan High School	CA/US	Bhasin & Menotti Punishment
+    James Logan High School	CA/US	Shaikh & Rawat  PredPol
+    Sonoma Academy	CA/	Jannes & Stewart Green Criminology
+    Lowell High School	CA/	Satovsky & Tsan DNA
+    James Logan High School	CA/US	Hui & Ayyala Pretexualw`}
+    />,
+  ]);
   return (
     <Section sx={{ p: 0 }}>
       <Section
         sx={{
-          //bg: "primary",
-          p: "0",
-          backgroundImage: `url("/wave.svg")`,
-          backgroundSize: "cover",
-          overflow: "hidden",
+          bg: "primary",
+          p: 0,
+          pb: "10px",
         }}
       >
         <Heading
@@ -72,45 +127,33 @@ export default function Home() {
           qn
         </Heading>
         <Text my="10px" mx="auto" as="b">
-          Meetings, Calender, Contacts.
+          Meetings, Calendar, Contacts.
         </Text>
-        <Inp mx="auto" placeholder="Search..." />
-      </Section>
-      <Section>
-        <Flex
-          sx={{
-            flexWrap: "wrap",
-            mx: ["auto", "10vw", "10vw"],
-            alignItems: "stretch",
-          }}
-        >
-          <Column sx={{ flex: [null, null, 1] }} my="10px">
-            <Heading mx="10px">Person</Heading>
-            <Inp placeholder="John Doe" />
-            <Heading mx="10px">Person Notes</Heading>
-            <TextArea
-              sx={{
-                width: "300px",
-                minHeight: "50px",
-                m: "5px",
-              }}
-            />
-            <Heading mx="10px">Email</Heading>
-            <Inp type="email" placeholder="johndoe@neelr.dev" />
-            <Heading mx="10px">Phone</Heading>
-            <Inp placeholder="+1 (925)-448-5457" />
-          </Column>
-          <Column sx={{ flex: [null, null, 1] }} my="10px">
-            {meetings}
-            <Clicker onClick={() => addMeet([...meetings, <Meeting />])}>
-              Add Meeting
-            </Clicker>
-          </Column>
+        <Flex mx="auto">
+          <Inp mx="5px" placeholder="Search..." />
+          <Clicker
+            sx={{
+              py: 0,
+            }}
+            mx="5px"
+            bg="secondary"
+          >
+            <Flex>
+              <Image m="auto" src="/arrow.svg" />
+            </Flex>
+          </Clicker>
         </Flex>
-        <Clicker my="10px" mx="auto">
-          Add Person
-        </Clicker>
       </Section>
+      <Flex
+        sx={{
+          backgroundImage: "url('/wave.svg')",
+          height: "150px",
+          backgroundSize: "cover",
+          width: "100vw",
+        }}
+      />
+      <Section>{meetings}</Section>
     </Section>
   );
 }
+export { getServerSideProps };
