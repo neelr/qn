@@ -258,7 +258,7 @@ export default function Home({ people }) {
 }
 
 export async function getServerSideProps(ctx) {
-  let payload = server(ctx);
+  let payload = await server(ctx);
   if (payload.redirect) return payload;
 
   let people = await base("People").select().all();
