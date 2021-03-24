@@ -53,17 +53,38 @@ export default function Home() {
           </Flex>
         </Clicker>
       </Section>
-      <Image
-        src="/sans.gif"
-        sx={{
-          m: "auto",
-          borderRadius: "5px",
-          boxShadow: "4px 4px #272838",
-          bg: "black",
-          pt: "10px",
-          pl: "8px",
-        }}
-      />
+      <Flex m="auto" sx={{ flexDirection: "column" }}>
+        <Image
+          src="/sans.gif"
+          sx={{
+            m: "auto",
+            borderRadius: "5px",
+            boxShadow: "4px 4px #272838",
+            bg: "black",
+            pt: "10px",
+            pl: "8px",
+          }}
+        />
+        <Text as="i" my="10px">
+          {
+            [
+              <>
+                "You feel like you're going to have a <strong>bad time.</strong>
+                "
+              </>,
+              <>
+                "You feel your <strong>sins</strong> crawling on your back."
+              </>,
+              <>
+                "The REAL <strong>battle</strong> finally begins."{" "}
+              </>,
+              <>
+                "Do you wanna have <strong>bad time?</strong>"
+              </>,
+            ][Math.floor(Math.random() * 4)]
+          }
+        </Text>
+      </Flex>
     </Section>
   );
 }

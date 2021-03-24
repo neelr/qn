@@ -34,9 +34,11 @@ export default function Nav() {
         <NavItem href="/add">Add</NavItem>
         <NavItem href="/people">People</NavItem>
         <NavItem href="/invite">Invite</NavItem>
-      </Flex>{" "}
+      </Flex>
       <Text
         sx={{
+          position: "absolute",
+          right: 10,
           fontWeight: "900",
           m: "10px",
           opacity: "0.6",
